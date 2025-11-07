@@ -7,6 +7,11 @@ export const storageUtils = {
   // Auth token
   saveAuthToken: async (token: string): Promise<void> => {
     try {
+      if (!token) {
+        throw new Error(
+          "Cannot save invalid token: token is empty or undefined"
+        );
+      }
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, token);
     } catch (error) {
       console.error("Failed to save auth token:", error);

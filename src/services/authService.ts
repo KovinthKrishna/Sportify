@@ -31,25 +31,35 @@ export const authService = {
         expiresInMins: 60,
       });
 
-      const { token, id, username, email, firstName, lastName } = response.data;
+      // DummyJSON returns 'accessToken' not 'token'
+      const { accessToken, id, username, email, firstName, lastName } =
+        response.data;
+
+      // Validate that we received a token
+      if (!accessToken) {
+        console.error("Login response data:", response.data);
+        throw new Error("No authentication token received from server");
+      }
 
       const user: User = {
         id: id.toString(),
-        username: username,
-        email: email,
-        fullName: `${firstName} ${lastName}`,
+        username: username || credentials.username,
+        email: email || "",
+        fullName:
+          `${firstName || ""} ${lastName || ""}`.trim() || username || "User",
       };
 
       // Store token and user
-      await storageUtils.saveAuthToken(token);
+      await storageUtils.saveAuthToken(accessToken);
       await storageUtils.saveUser(user);
 
-      return { user, token };
+      return { user, token: accessToken };
     } catch (error: any) {
       if (error.response?.status === 400) {
         throw new Error("Invalid username or password");
       }
-      throw new Error("Login failed. Please try again.");
+      console.error("Login error:", error);
+      throw new Error(error.message || "Login failed. Please try again.");
     }
   },
 
