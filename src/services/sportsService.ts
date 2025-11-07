@@ -109,8 +109,14 @@ export const sportsService = {
       // Combine and flatten all matches
       const allMatches = results.flat();
 
+      // Remove duplicates based on idEvent
+      const uniqueMatches = allMatches.filter(
+        (match, index, self) =>
+          index === self.findIndex((m) => m.idEvent === match.idEvent)
+      );
+
       // Sort by date
-      return allMatches.sort((a, b) => {
+      return uniqueMatches.sort((a, b) => {
         const dateA = new Date(a.dateEvent).getTime();
         const dateB = new Date(b.dateEvent).getTime();
         return dateA - dateB;
