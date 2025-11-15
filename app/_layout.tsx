@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/src/contexts/ThemeContext";
+import { ThemeProvider, useTheme } from "@/src/contexts/ThemeContext";
 import { useAppDispatch } from "@/src/redux/hooks";
 import { checkAuth } from "@/src/redux/slices/authSlice";
 import { store } from "@/src/redux/store";
@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { Provider } from "react-redux";
 
 function AppNavigator() {
+  const { theme } = useTheme();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ function AppNavigator() {
 
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style={theme === "dark" ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="auth/register" options={{ headerShown: false }} />
